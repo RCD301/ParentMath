@@ -230,8 +230,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 14px;
-  padding: 28px 24px;
+  padding: 24px 20px;
   background: var(--card-bg);
   border: 2px solid rgba(229, 231, 235, 0.8);
   border-radius: var(--radius-lg);
@@ -242,6 +243,7 @@
   box-shadow: 0 2px 8px rgba(45, 74, 157, 0.06);
   position: relative;
   overflow: hidden;
+  min-height: 120px;
 }
 
 .mode-card::before {
@@ -295,17 +297,12 @@
   transform: scale(1.05);
 }
 
-.mode-card-text h3 {
-  font-size: 17px;
+.mode-label {
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 4px;
-}
-
-.mode-card-text p {
-  font-size: 14px;
-  color: var(--text-secondary);
-  line-height: 1.4;
+  margin: 0;
+  line-height: 1.2;
 }
 
 /* Input method section */
@@ -659,25 +656,110 @@
   word-wrap: break-word;
 }
 
+/* Crop Container */
+.crop-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background: #000;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.crop-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.crop-actions button {
+  flex: 1;
+}
+
+/* Photo Button Row */
+.photo-button-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.photo-button-row button {
+  flex: 1;
+}
+
+/* Upload Helper Text */
+.upload-helper-text {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.5;
+  max-width: 400px;
+}
+
+/* Improved Error Messages */
+.error-tips {
+  margin-top: 12px;
+  padding-left: 20px;
+  list-style: disc;
+}
+
+.error-tips li {
+  margin-bottom: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Analyzing Button with Spinner */
+.analyzing-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.spinner-inline {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /* Mobile optimization for mode cards */
 @media (max-width: 640px) {
   .mode-card {
     min-height: 100px;
-    padding: 0.75rem 1rem;
+    padding: 20px 16px;
+    gap: 10px;
   }
 
   .mode-icon-simple {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
   }
 
-  .mode-card-text h3 {
+  .mode-label {
     font-size: 15px;
-    margin-bottom: 2px;
   }
 
-  .mode-card-text p {
-    font-size: 12px;
+  .crop-container {
+    height: 300px;
+  }
+
+  .photo-button-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .photo-button-row button {
+    width: 100%;
   }
 }
 
@@ -717,7 +799,7 @@
   }
 
   .mode-card {
-    padding: 28px 24px;
+    padding: 32px 28px;
   }
 
   .mode-text h2 {
@@ -728,8 +810,8 @@
     font-size: 15px;
   }
 
-  .mode-card-text h3 {
-    font-size: 19px;
+  .mode-label {
+    font-size: 18px;
   }
 
   .section-title {

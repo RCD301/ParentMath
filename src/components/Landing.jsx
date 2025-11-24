@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { BookOpenIcon, ChatBubbleLeftRightIcon, CameraIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
+import Cropper from 'react-easy-crop';
 import { extractTextFromImage } from '../utils/ocrService';
 import { detectProblems, validateDetection } from '../utils/problemDetector';
 import './Landing.css';
@@ -15,10 +16,22 @@ const Landing = ({ onSubmit, preservedState }) => {
   const [showPhotoUpload, setShowPhotoUpload] = useState(preservedState?.method === 'photo');
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [originalPreview, setOriginalPreview] = useState(null);
   const [error, setError] = useState(null);
   const [detectedProblems, setDetectedProblems] = useState([]);
   const [selectedProblem, setSelectedProblem] = useState(null);
   const [isProcessingOCR, setIsProcessingOCR] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  // Crop state
+  const [isCropping, setIsCropping] = useState(false);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+
+  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
 
   const handleModeSelect = (mode) => {
     setSelectedMode(mode);
@@ -56,19 +69,102 @@ const Landing = ({ onSubmit, preservedState }) => {
     setSelectedFile(file);
     setDetectedProblems([]);
     setSelectedProblem(null);
+    setIsCropping(false);
 
     const reader = new FileReader();
     reader.onloadend = async () => {
       setPreview(reader.result);
-
-      // Perform OCR to detect problems
-      await performOCR(reader.result, file.type);
+      setOriginalPreview(reader.result);
+      // Don't auto-run OCR anymore - wait for user to crop or analyze
     };
     reader.readAsDataURL(file);
   };
 
+  const handleRetakePhoto = () => {
+    setPreview(null);
+    setOriginalPreview(null);
+    setSelectedFile(null);
+    setDetectedProblems([]);
+    setSelectedProblem(null);
+    setError(null);
+    setIsCropping(false);
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
+    setCroppedAreaPixels(null);
+  };
+
+  const handleStartCrop = () => {
+    setIsCropping(true);
+    setError(null);
+  };
+
+  const createImage = (url) =>
+    new Promise((resolve, reject) => {
+      const image = new Image();
+      image.addEventListener('load', () => resolve(image));
+      image.addEventListener('error', (error) => reject(error));
+      image.src = url;
+    });
+
+  const getCroppedImg = async (imageSrc, pixelCrop) => {
+    const image = await createImage(imageSrc);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = pixelCrop.width;
+    canvas.height = pixelCrop.height;
+
+    ctx.drawImage(
+      image,
+      pixelCrop.x,
+      pixelCrop.y,
+      pixelCrop.width,
+      pixelCrop.height,
+      0,
+      0,
+      pixelCrop.width,
+      pixelCrop.height
+    );
+
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          console.error('Canvas is empty');
+          return;
+        }
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+          resolve(reader.result);
+        };
+      }, 'image/jpeg');
+    });
+  };
+
+  const handleApplyCrop = async () => {
+    try {
+      const croppedImage = await getCroppedImg(originalPreview, croppedAreaPixels);
+      setPreview(croppedImage);
+      setIsCropping(false);
+      setCrop({ x: 0, y: 0 });
+      setZoom(1);
+    } catch (e) {
+      console.error('Error cropping image:', e);
+      setError('Failed to crop image. Please try again.');
+    }
+  };
+
+  const handleUndoCrop = () => {
+    setPreview(originalPreview);
+    setIsCropping(false);
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
+    setError(null);
+  };
+
   const performOCR = async (dataUrl, mediaType) => {
     setIsProcessingOCR(true);
+    setIsAnalyzing(true);
     setError(null);
 
     try {
@@ -103,11 +199,20 @@ const Landing = ({ onSubmit, preservedState }) => {
       }
     } catch (err) {
       console.error('OCR error:', err);
-      setError('Could not read text from image. You can still submit the image for analysis.');
+      setError({
+        type: 'ocr',
+        message: 'Could not read text from this photo.'
+      });
       // Allow fallback to image submission
     } finally {
       setIsProcessingOCR(false);
+      setIsAnalyzing(false);
     }
+  };
+
+  const handleAnalyzePhoto = async () => {
+    if (!preview) return;
+    await performOCR(preview, selectedFile.type);
   };
 
   const handleTextSubmit = () => {
@@ -199,10 +304,7 @@ const Landing = ({ onSubmit, preservedState }) => {
               onClick={() => handleModeSelect('parent')}
             >
               <BookOpenIcon className="mode-icon-simple" />
-              <div className="mode-card-text">
-                <h3>Parent</h3>
-                <p>Coach me first</p>
-              </div>
+              <h3 className="mode-label">Parent</h3>
             </button>
 
             <button
@@ -210,10 +312,7 @@ const Landing = ({ onSubmit, preservedState }) => {
               onClick={() => handleModeSelect('kid')}
             >
               <ChatBubbleLeftRightIcon className="mode-icon-simple" />
-              <div className="mode-card-text">
-                <h3>Child</h3>
-                <p>Read together</p>
-              </div>
+              <h3 className="mode-label">Child</h3>
             </button>
           </div>
         </section>
@@ -256,11 +355,28 @@ const Landing = ({ onSubmit, preservedState }) => {
                   <CameraIcon className="upload-icon" />
                   <h3>Click to upload or take photo</h3>
                   <p>Supports JPG, PNG, WebP (max 10MB)</p>
+                  <p className="upload-helper-text">
+                    For best results: good lighting, dark text on light paper, and the problem centered in the frame.
+                  </p>
                 </label>
               </div>
             ) : (
               <div className="preview-zone">
-                <img src={preview} alt="Preview" className="preview-img" />
+                {!isCropping ? (
+                  <img src={preview} alt="Preview" className="preview-img" />
+                ) : (
+                  <div className="crop-container">
+                    <Cropper
+                      image={originalPreview}
+                      crop={crop}
+                      zoom={zoom}
+                      aspect={4 / 3}
+                      onCropChange={setCrop}
+                      onCropComplete={onCropComplete}
+                      onZoomChange={setZoom}
+                    />
+                  </div>
+                )}
 
                 {/* OCR Processing Indicator */}
                 {isProcessingOCR && (
@@ -295,33 +411,63 @@ const Landing = ({ onSubmit, preservedState }) => {
                 )}
 
                 {/* Selected Problem Display */}
-                {!isProcessingOCR && selectedProblem && (
+                {!isProcessingOCR && selectedProblem && !isCropping && (
                   <div className="selected-problem-display">
                     <p className="selected-problem-label">Selected Problem:</p>
                     <div className="selected-problem-text">{selectedProblem.text}</div>
                   </div>
                 )}
 
-                <div className="preview-actions-single">
-                  <button
-                    className="btn-secondary"
-                    onClick={() => {
-                      setPreview(null);
-                      setSelectedFile(null);
-                      setDetectedProblems([]);
-                      setSelectedProblem(null);
-                    }}
-                  >
-                    Change Photo
-                  </button>
-                  <button
-                    className="btn-primary"
-                    onClick={handlePhotoSubmit}
-                    disabled={isProcessingOCR}
-                  >
-                    {isProcessingOCR ? 'Processing...' : 'Analyze Problem →'}
-                  </button>
-                </div>
+                {/* Action buttons */}
+                {!isCropping ? (
+                  <>
+                    <div className="photo-button-row">
+                      <button
+                        className="btn-secondary"
+                        onClick={handleRetakePhoto}
+                        disabled={isAnalyzing}
+                      >
+                        Retake Photo
+                      </button>
+                      <button
+                        className="btn-secondary"
+                        onClick={handleStartCrop}
+                        disabled={isAnalyzing}
+                      >
+                        Crop Photo
+                      </button>
+                    </div>
+                    <button
+                      className="btn-primary"
+                      onClick={detectedProblems.length > 0 ? handlePhotoSubmit : handleAnalyzePhoto}
+                      disabled={isAnalyzing}
+                    >
+                      {isAnalyzing ? (
+                        <span className="analyzing-button">
+                          <span className="spinner-inline"></span>
+                          Analyzing…
+                        </span>
+                      ) : (
+                        'Analyze Problem →'
+                      )}
+                    </button>
+                  </>
+                ) : (
+                  <div className="crop-actions">
+                    <button
+                      className="btn-secondary"
+                      onClick={handleUndoCrop}
+                    >
+                      Undo Crop
+                    </button>
+                    <button
+                      className="btn-primary"
+                      onClick={handleApplyCrop}
+                    >
+                      Apply Crop
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </section>
@@ -384,7 +530,21 @@ const Landing = ({ onSubmit, preservedState }) => {
         {/* Error Message */}
         {error && (
           <div className="error-message-single">
-            {error}
+            {typeof error === 'string' ? (
+              error
+            ) : error.type === 'ocr' ? (
+              <>
+                <strong>{error.message}</strong>
+                <ul className="error-tips">
+                  <li>Try taking the photo in brighter lighting.</li>
+                  <li>Avoid glare or screen lines.</li>
+                  <li>Fill the frame with just the math problem.</li>
+                  <li>Make sure the numbers are dark on a light background.</li>
+                </ul>
+              </>
+            ) : (
+              error.message || error
+            )}
           </div>
         )}
 
