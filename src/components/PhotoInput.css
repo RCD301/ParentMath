@@ -1,0 +1,236 @@
+.photo-input {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.photo-input-container {
+  max-width: 600px;
+  width: 100%;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.photo-input-header {
+  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+  color: white;
+  padding: 24px;
+}
+
+.photo-input-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.photo-input-subtitle {
+  font-size: 16px;
+  opacity: 0.95;
+}
+
+.photo-input-content {
+  padding: 32px 24px;
+  min-height: 400px;
+  position: relative;
+}
+
+.upload-area {
+  text-align: center;
+}
+
+.file-input {
+  display: none;
+}
+
+.upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  background: var(--bg-light);
+  border: 3px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upload-label:hover {
+  background: #f0f7ff;
+  border-color: var(--primary-color);
+}
+
+.upload-icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  color: var(--text-light);
+}
+
+.upload-label h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.upload-label p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.upload-hint {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.preview-area {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.preview-image-container {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.preview-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.preview-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.button {
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.button-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.button-primary:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.button-secondary {
+  background: white;
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
+}
+
+.button-secondary:hover:not(:disabled) {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #fff1f0;
+  border: 1px solid #ffa39e;
+  border-radius: var(--radius-sm);
+  margin-top: 16px;
+  color: var(--danger-color);
+  font-size: 14px;
+}
+
+.error-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.processing-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  z-index: 10;
+}
+
+.processing-overlay p {
+  font-size: 16px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.photo-input-footer {
+  background: var(--bg-light);
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-color);
+}
+
+.footer-tip {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.footer-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--text-light);
+  flex-shrink: 0;
+}
+
+.footer-tip strong {
+  color: var(--text-primary);
+}
+
+@media (min-width: 768px) {
+  .photo-input-title {
+    font-size: 28px;
+  }
+
+  .photo-input-subtitle {
+    font-size: 18px;
+  }
+
+  .preview-actions {
+    flex-direction: row;
+  }
+
+  .button {
+    flex: 1;
+  }
+}

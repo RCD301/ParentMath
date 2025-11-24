@@ -1,0 +1,43 @@
+.app {
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Global transitions for view changes */
+.app > * {
+  animation: viewTransition 0.3s ease-in-out;
+}
+
+@keyframes viewTransition {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Common button styles shared across components */
+.back-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  transition: background 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Ensure full-height layouts on all screens */
+@media (max-height: 600px) {
+  .app > * {
+    min-height: auto;
+  }
+}

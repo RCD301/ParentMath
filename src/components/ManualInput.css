@@ -1,0 +1,198 @@
+.manual-input {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.manual-input-container {
+  max-width: 480px;
+  width: 100%;
+  background: var(--card-bg);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  padding: 32px;
+}
+
+.manual-input-header {
+  margin-bottom: 28px;
+}
+
+.manual-input-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.manual-input-subtitle {
+  font-size: 15px;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.6;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.manual-input-content {
+  margin-bottom: 0;
+}
+
+.input-section {
+  margin-bottom: 20px;
+}
+
+.input-label {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.problem-textarea {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--section-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  resize: vertical;
+  min-height: 120px;
+  transition: all 0.2s ease;
+}
+
+.problem-textarea:focus {
+  border-color: var(--primary-color);
+  background: var(--card-bg);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.problem-textarea::placeholder {
+  color: var(--text-light);
+}
+
+.input-hint {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+.examples-section {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: var(--section-bg);
+  border-radius: var(--radius-md);
+}
+
+.examples-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.examples-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.example-button {
+  padding: 8px 14px;
+  font-size: 13px;
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+}
+
+.example-button:hover {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #FEF2F2;
+  border: 1px solid #FCA5A5;
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+  color: #DC2626;
+  font-size: 14px;
+}
+
+.error-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.manual-input-footer {
+  background: var(--section-bg);
+  padding: 12px 16px;
+  text-align: center;
+  border-radius: var(--radius-sm);
+  margin-top: 24px;
+}
+
+.footer-tip {
+  font-size: 13px;
+  color: var(--text-light);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.footer-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--text-light);
+  flex-shrink: 0;
+}
+
+.footer-tip strong {
+  color: var(--text-secondary);
+}
+
+kbd {
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-family: monospace;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+@media (min-width: 768px) {
+  .manual-input-container {
+    padding: 40px;
+  }
+
+  .manual-input-title {
+    font-size: 28px;
+  }
+
+  .manual-input-subtitle {
+    font-size: 16px;
+  }
+
+  .problem-textarea {
+    min-height: 140px;
+  }
+}
