@@ -200,8 +200,8 @@ const Landing = ({ onSubmit, preservedState }) => {
             >
               <BookOpenIcon className="mode-icon-simple" />
               <div className="mode-card-text">
-                <h3>Me (Parent)</h3>
-                <p>Help me explain it</p>
+                <h3>Parent</h3>
+                <p>Coach me first</p>
               </div>
             </button>
 
@@ -211,8 +211,8 @@ const Landing = ({ onSubmit, preservedState }) => {
             >
               <ChatBubbleLeftRightIcon className="mode-icon-simple" />
               <div className="mode-card-text">
-                <h3>My Child</h3>
-                <p>Kid-friendly explanation</p>
+                <h3>Child</h3>
+                <p>Read together</p>
               </div>
             </button>
           </div>

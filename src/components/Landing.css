@@ -659,6 +659,28 @@
   word-wrap: break-word;
 }
 
+/* Mobile optimization for mode cards */
+@media (max-width: 640px) {
+  .mode-card {
+    min-height: 100px;
+    padding: 0.75rem 1rem;
+  }
+
+  .mode-icon-simple {
+    width: 24px;
+    height: 24px;
+  }
+
+  .mode-card-text h3 {
+    font-size: 15px;
+    margin-bottom: 2px;
+  }
+
+  .mode-card-text p {
+    font-size: 12px;
+  }
+}
+
 /* Tablet and up */
 @media (min-width: 768px) {
   .landing-container {
