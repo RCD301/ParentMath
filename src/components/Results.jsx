@@ -172,13 +172,14 @@ const Results = ({ mode, inputData, onReset }) => {
 
           {/* Problem Analysis Details (collapsible) */}
           <details className="problem-analysis">
-            <summary className="analysis-summary">View Problem Analysis</summary>
+            <summary className="analysis-summary">Why this method works</summary>
             <div className="analysis-content">
-              <p><strong>Operation:</strong> {data.parsed.operation}</p>
+              <p><strong>What we're doing:</strong> {data.parsed.operation}</p>
               <p><strong>Why:</strong> {data.parsed.operation_why}</p>
-              <p><strong>Problem Type:</strong> {data.parsed.problem_type.replace(/_/g, ' ')}</p>
-              <p><strong>Unknown:</strong> {data.parsed.unknown}</p>
+              <p><strong>What kind of problem this is:</strong> {data.parsed.problem_type.replace(/_/g, ' ')}</p>
+              <p><strong>What we're trying to find:</strong> {data.parsed.unknown}</p>
               {data.parsed.unit && <p><strong>Unit:</strong> {data.parsed.unit}</p>}
+              <p className="parent-tip"><strong>Parent tip:</strong> You can use this same idea to solve similar problems. Look for the pattern and repeat it.</p>
             </div>
           </details>
         </div>
