@@ -3,6 +3,7 @@ import { BookOpenIcon, ChatBubbleLeftRightIcon, CameraIcon, PencilSquareIcon } f
 import Cropper from 'react-easy-crop';
 import { extractTextFromImage } from '../utils/ocrService';
 import { detectProblems, validateDetection } from '../utils/problemDetector';
+import { LoginPanel } from './LoginPanel';
 import './Landing.css';
 
 /**
@@ -288,6 +289,11 @@ const Landing = ({ onSubmit, preservedState }) => {
   return (
     <div className="landing">
       <div className="landing-container-single">
+        {/* Card Header with Login */}
+        <div className="card-header">
+          <LoginPanel />
+        </div>
+
         {/* Header */}
         <header className="landing-header-single">
           <h1 className="landing-title">ParentMath</h1>

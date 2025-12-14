@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { analyzeMathProblemText, analyzeMathProblemImage } from '../services/anthropicService';
+import { LoginPanel } from './LoginPanel';
 import './Results.css';
 
 /**
@@ -194,6 +195,11 @@ const Results = ({ mode, inputData, onReset }) => {
   return (
     <div className="results">
       <div className="results-container">
+        {/* Card Header with Login */}
+        <div className="card-header">
+          <LoginPanel />
+        </div>
+
         <header className="results-header">
           <h2 className="results-title">
             {mode === 'parent' ? 'Teaching Guidance' : 'Let\'s Learn Together!'}

@@ -6,7 +6,8 @@
       "Bash(npm run build:*)",
       "Bash(netstat:*)",
       "Bash(findstr:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
