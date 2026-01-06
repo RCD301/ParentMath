@@ -225,3 +225,5 @@ For issues or questions:
 ---
 
 **Made with ❤️ for parents who want to help their kids with homework**
+
+Stripe checkout wired up
