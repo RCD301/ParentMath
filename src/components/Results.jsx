@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { analyzeMathProblemText, analyzeMathProblemImage } from '../services/anthropicService';
 import { LoginPanel } from './LoginPanel';
+import { PaywallModal } from './PaywallModal';
+import { useAuth } from '../context/AuthContext';
+import { getUserProfile, consumeUse, hasProAccess, canUseFree } from '../lib/usageService';
 import './Results.css';
 
 /**
@@ -9,9 +12,12 @@ import './Results.css';
  * Displays the AI-generated teaching guidance
  */
 const Results = ({ mode, inputData, onReset }) => {
+  const { user } = useAuth();
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [usesRemaining, setUsesRemaining] = useState(5);
 
   useEffect(() => {
     const analyzePromise = async () => {
@@ -19,6 +25,34 @@ const Results = ({ mode, inputData, onReset }) => {
       setError(null);
 
       try {
+        // Check usage limits before analyzing
+        if (!user) {
+          setError('Please sign in to continue');
+          setLoading(false);
+          return;
+        }
+
+        const profile = await getUserProfile(user.uid);
+        if (!profile) {
+          setError('Unable to load user profile');
+          setLoading(false);
+          return;
+        }
+
+        const isPro = hasProAccess(profile);
+        const canUse = canUseFree(profile);
+
+        if (!isPro && !canUse) {
+          // Show paywall
+          setUsesRemaining(5 - profile.freeUsesUsed);
+          setShowPaywall(true);
+          setLoading(false);
+          return;
+        }
+
+        // Consume a use before proceeding
+        await consumeUse(user.uid);
+
         let guidance;
 
         if (inputData.type === 'text') {
@@ -43,7 +77,7 @@ const Results = ({ mode, inputData, onReset }) => {
     };
 
     analyzePromise();
-  }, [inputData, mode]);
+  }, [inputData, mode, user]);
 
   const formatMarkdown = (text) => {
     // Split into paragraphs and format markdown (for Kid mode)
@@ -194,7 +228,18 @@ const Results = ({ mode, inputData, onReset }) => {
 
   return (
     <div className="results">
-      <div className="results-container">
+      <div className="results-container app-card-shell">
+        {/* Paywall In-Card Overlay */}
+        {showPaywall && (
+          <PaywallModal
+            onClose={() => {
+              setShowPaywall(false);
+              onReset();
+            }}
+            usesRemaining={usesRemaining}
+          />
+        )}
+
         {/* Card Header with Login */}
         <div className="card-header">
           <LoginPanel />

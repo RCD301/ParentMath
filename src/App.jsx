@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Landing from './components/Landing';
 import Results from './components/Results';
+import Pricing from './components/Pricing';
 import './App.css';
 
 /**
@@ -9,9 +10,28 @@ import './App.css';
  */
 function App() {
   // State management
-  const [currentView, setCurrentView] = useState('landing'); // landing, results
+  const [currentView, setCurrentView] = useState('landing'); // landing, results, pricing
   const [inputData, setInputData] = useState(null); // Data from Landing component (includes mode, type, data)
   const [preservedState, setPreservedState] = useState(null); // Preserve mode and method when resetting
+
+  // Simple client-side routing based on URL path
+  useEffect(() => {
+    const handleRouteChange = () => {
+      const path = window.location.pathname;
+      if (path === '/pricing') {
+        setCurrentView('pricing');
+      } else if (currentView === 'pricing') {
+        // If we navigate away from pricing, go back to landing
+        setCurrentView('landing');
+      }
+    };
+
+    // Handle initial route and popstate (back/forward)
+    handleRouteChange();
+    window.addEventListener('popstate', handleRouteChange);
+
+    return () => window.removeEventListener('popstate', handleRouteChange);
+  }, [currentView]);
 
   // Navigation handlers
   const handleInputSubmit = (data) => {
@@ -34,6 +54,9 @@ function App() {
   // Render current view
   const renderView = () => {
     switch (currentView) {
+      case 'pricing':
+        return <Pricing />;
+
       case 'landing':
         return <Landing onSubmit={handleInputSubmit} preservedState={preservedState} />;
 

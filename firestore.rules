@@ -1,0 +1,48 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users collection
+    match /users/{userId} {
+      // Users can only read their own document
+      allow read: if request.auth != null && request.auth.uid == userId;
+
+      // Users can create their own document
+      allow create: if request.auth != null && request.auth.uid == userId;
+
+      // Users can update their own document with restrictions
+      allow update: if request.auth != null
+        && request.auth.uid == userId
+        && validateUserUpdate();
+    }
+
+    // Helper function to validate user document updates
+    function validateUserUpdate() {
+      let data = request.resource.data;
+      let oldData = resource.data;
+
+      // If plan is 'free' and subscription is 'inactive', enforce usage limits
+      let isFreeUser = oldData.plan == 'free' && oldData.subscriptionStatus == 'inactive';
+
+      // If updating freeUsesUsed
+      let updatingUses = data.freeUsesUsed != oldData.freeUsesUsed;
+
+      // For free users updating usage count
+      // Allow the update if:
+      // - User is not a free user (Pro users can do anything), OR
+      // - Not updating usage count (e.g., just updating lastUsedAt), OR
+      // - Usage increment is valid (exactly +1 and doesn't exceed 5)
+      return !isFreeUser
+        || !updatingUses
+        || (
+          // Must increment by exactly 1
+          data.freeUsesUsed == oldData.freeUsesUsed + 1
+          // Cannot exceed 5 uses
+          && data.freeUsesUsed <= 5
+          // Allow other fields like lastUsedAt to be updated too
+          && data.plan == oldData.plan
+          && data.subscriptionStatus == oldData.subscriptionStatus
+        );
+    }
+  }
+}
