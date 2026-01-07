@@ -316,3 +316,111 @@ export const analyzeMathProblemImage = async (base64Image, mediaType = 'image/jp
 
   return message.content[0].text;
 };
+
+/**
+ * Analyzes a math problem using text input with streaming support
+ * @param {string} problemText - The math problem as text
+ * @param {string} mode - 'parent' or 'kid'
+ * @param {Function} onChunk - Callback function that receives text chunks as they arrive
+ * @returns {Promise<string>} Complete Claude response
+ */
+export const analyzeMathProblemTextStreaming = async (problemText, mode = 'parent', onChunk) => {
+  if (!API_KEY) {
+    throw new Error('API key not configured. Please add VITE_ANTHROPIC_API_KEY to your .env file');
+  }
+
+  const client = new Anthropic({
+    apiKey: API_KEY,
+    dangerouslyAllowBrowser: true // Note: In production, use a backend proxy
+  });
+
+  const userMessage = mode === 'parent'
+    ? `A parent needs help understanding how to teach their child this math problem:\n\n${problemText}\n\nProvide warm, practical coaching on how to explain this to their child.`
+    : `Help explain this math problem to a child:\n\n${problemText}\n\nExplain it in a fun, simple way they can understand.`;
+
+  let fullText = '';
+
+  const stream = await client.messages.stream({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 2048,
+    system: getSystemPrompt(mode),
+    messages: [
+      {
+        role: 'user',
+        content: userMessage
+      }
+    ]
+  });
+
+  for await (const chunk of stream) {
+    if (chunk.type === 'content_block_delta' && chunk.delta?.text) {
+      fullText += chunk.delta.text;
+      if (onChunk) {
+        onChunk(fullText);
+      }
+    }
+  }
+
+  return fullText;
+};
+
+/**
+ * Analyzes a math problem using an image with streaming support
+ * @param {string} base64Image - Base64 encoded image
+ * @param {string} mediaType - Image media type (image/jpeg, image/png, etc.)
+ * @param {string} mode - 'parent' or 'kid'
+ * @param {Function} onChunk - Callback function that receives text chunks as they arrive
+ * @returns {Promise<string>} Complete Claude response
+ */
+export const analyzeMathProblemImageStreaming = async (base64Image, mediaType = 'image/jpeg', mode = 'parent', onChunk) => {
+  if (!API_KEY) {
+    throw new Error('API key not configured. Please add VITE_ANTHROPIC_API_KEY to your .env file');
+  }
+
+  const client = new Anthropic({
+    apiKey: API_KEY,
+    dangerouslyAllowBrowser: true // Note: In production, use a backend proxy
+  });
+
+  const userMessage = mode === 'parent'
+    ? `A parent needs help understanding how to teach their child this math problem from their homework. Please analyze the image and provide warm, practical coaching on how to explain this to their child.`
+    : `Help explain this math problem from the homework to a child. Explain it in a fun, simple way they can understand.`;
+
+  let fullText = '';
+
+  const stream = await client.messages.stream({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 2048,
+    system: getSystemPrompt(mode),
+    messages: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'image',
+            source: {
+              type: 'base64',
+              media_type: mediaType,
+              data: base64Image
+            }
+          },
+          {
+            type: 'text',
+            text: userMessage
+          }
+        ]
+      }
+    ]
+  });
+
+  for await (const chunk of stream) {
+    if (chunk.type === 'content_block_delta' && chunk.delta?.text) {
+      fullText += chunk.delta.text;
+      if (onChunk) {
+        onChunk(fullText);
+      }
+    }
+  }
+
+  return fullText;
+};

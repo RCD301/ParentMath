@@ -7,11 +7,14 @@ import Stripe from "stripe";
 setGlobalOptions({ maxInstances: 10 });
 admin.initializeApp();
 
-const STRIPE_SECRET_KEY = defineSecret("sk_test_51SlBeRHdKRp5aVmUUYmhCLbBz9MaGbPiRGFbYqy1jBMLUR2paDxLD7TjGSZBTvtLrRJcez2CMvuu2u1Dhqlv6OyU00ZSU0WlGf");
-const STRIPE_PRICE_ID = defineSecret("price_1MoBy5LkdIwHu7ixZhnattbh");
+// Define secrets (NO process.env)
+const STRIPE_SECRET_KEY = defineSecret("STRIPE_SECRET_KEY");
+const STRIPE_PRICE_ID = defineSecret("STRIPE_PRICE_ID");
 
 export const createCheckoutSession = onCall(
-  { secrets: [STRIPE_SECRET_KEY, STRIPE_PRICE_ID] },
+  {
+    secrets: [STRIPE_SECRET_KEY, STRIPE_PRICE_ID],
+  },
   async (request) => {
     if (!request.auth) {
       throw new Error("User must be logged in");
@@ -30,8 +33,12 @@ export const createCheckoutSession = onCall(
       const customer = await stripe.customers.create({
         metadata: { uid },
       });
+
       customerId = customer.id;
-      await userRef.set({ stripeCustomerId: customerId }, { merge: true });
+      await userRef.set(
+        { stripeCustomerId: customerId },
+        { merge: true }
+      );
     }
 
     const session = await stripe.checkout.sessions.create({

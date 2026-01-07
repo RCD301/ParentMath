@@ -3,6 +3,7 @@ import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { analyzeMathProblemText, analyzeMathProblemImage } from '../services/anthropicService';
 import { LoginPanel } from './LoginPanel';
 import { PaywallModal } from './PaywallModal';
+import { SkeletonLoader } from './SkeletonLoader';
 import { useAuth } from '../context/AuthContext';
 import { getUserProfile, consumeUse, hasProAccess, canUseFree } from '../lib/usageService';
 import './Results.css';
@@ -22,6 +23,7 @@ const Results = ({ mode, inputData, onReset }) => {
   useEffect(() => {
     const analyzePromise = async () => {
       setLoading(true);
+      setResult(null);
       setError(null);
 
       try {
@@ -53,6 +55,7 @@ const Results = ({ mode, inputData, onReset }) => {
         // Consume a use before proceeding
         await consumeUse(user.uid);
 
+        // Fetch complete response - no streaming
         let guidance;
 
         if (inputData.type === 'text') {
@@ -65,6 +68,7 @@ const Results = ({ mode, inputData, onReset }) => {
           );
         }
 
+        // Set result only when complete
         setResult(guidance);
       } catch (err) {
         console.error('Analysis error:', err);
@@ -274,12 +278,9 @@ const Results = ({ mode, inputData, onReset }) => {
             </div>
           )}
 
-          {/* Loading state */}
-          {loading && (
-            <div className="loading-state">
-              <div className="spinner"></div>
-              <p>Analyzing the problem and preparing guidance...</p>
-            </div>
+          {/* Loading state - stable skeleton until complete */}
+          {loading && !error && (
+            <SkeletonLoader mode={mode} />
           )}
 
           {/* Error state */}
@@ -294,9 +295,9 @@ const Results = ({ mode, inputData, onReset }) => {
             </div>
           )}
 
-          {/* Results */}
-          {result && !loading && (
-            <div className="guidance-content">
+          {/* Results - only show when completely ready, with fade-in */}
+          {!loading && result && !error && (
+            <div className="guidance-content fade-in">
               <div className={`guidance-text mode-${mode}`}>
                 {mode === 'parent' ? renderJSON(result) : formatMarkdown(result)}
               </div>
