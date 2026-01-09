@@ -557,6 +557,13 @@ const Landing = ({ onSubmit, preservedState }) => {
         {/* Footer */}
         <footer className="landing-footer-single">
           <p>Supports elementary math (grades K-5)</p>
+          <a href="/help-your-child-with-math-homework" className="footer-help-link">
+            How to Help Your Child With Math Homework
+          </a>
+          <p className="footer-support-text">
+            Need help or have a question?<br />
+            Email us at <a href="mailto:help@parentmath.com" className="footer-support-email">help@parentmath.com</a>
+          </p>
         </footer>
       </div>
     </div>

@@ -197,6 +197,42 @@
 .landing-footer-single p {
   font-size: 13px;
   color: var(--text-light);
+  margin-bottom: 8px;
+}
+
+.footer-support-text {
+  font-size: 12px;
+  color: var(--text-light);
+  margin: 12px 0;
+  line-height: 1.6;
+}
+
+.footer-support-email {
+  color: var(--confidence-blue);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.footer-support-email:hover {
+  color: var(--learning-purple);
+  text-decoration: underline;
+}
+
+.footer-help-link {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--confidence-blue);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  padding: 4px 0;
+  border-bottom: 1px solid transparent;
+}
+
+.footer-help-link:hover {
+  color: var(--learning-purple);
+  border-bottom-color: var(--learning-purple);
+  transform: translateY(-1px);
 }
 
 /* Single page workflow sections */

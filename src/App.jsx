@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Landing from './components/Landing';
 import Results from './components/Results';
 import Pricing from './components/Pricing';
+import HelpYourChild from './components/HelpYourChild';
 import './App.css';
 
 /**
@@ -10,7 +11,7 @@ import './App.css';
  */
 function App() {
   // State management
-  const [currentView, setCurrentView] = useState('landing'); // landing, results, pricing
+  const [currentView, setCurrentView] = useState('landing'); // landing, results, pricing, help
   const [inputData, setInputData] = useState(null); // Data from Landing component (includes mode, type, data)
   const [preservedState, setPreservedState] = useState(null); // Preserve mode and method when resetting
 
@@ -20,8 +21,10 @@ function App() {
       const path = window.location.pathname;
       if (path === '/pricing') {
         setCurrentView('pricing');
-      } else if (currentView === 'pricing') {
-        // If we navigate away from pricing, go back to landing
+      } else if (path === '/help-your-child-with-math-homework') {
+        setCurrentView('help');
+      } else if (currentView === 'pricing' || currentView === 'help') {
+        // If we navigate away from pricing or help, go back to landing
         setCurrentView('landing');
       }
     };
@@ -54,6 +57,9 @@ function App() {
   // Render current view
   const renderView = () => {
     switch (currentView) {
+      case 'help':
+        return <HelpYourChild />;
+
       case 'pricing':
         return <Pricing />;
 
