@@ -154,11 +154,9 @@ const HelpYourChild = () => {
         </section>
 
         <section className="help-section help-cta-section">
-          <h2>When You Need More Than Patience</h2>
+          <h2>This is where ParentMath helps.</h2>
 
           <p>Sometimes the biggest barrier isn't your child's understanding—it's yours. You want to help, but you don't know what the worksheet is actually asking for. You don't understand the method they're supposed to use. And you're out of time.</p>
-
-          <p>This is where ParentMath helps.</p>
 
           <p>Take a photo of the problem or type it in. Get a clear explanation of what's being asked and how to guide your child through it—using the method their teacher expects. No jargon. No lectures. Just the clarity you need to help your child think it through.</p>
 
@@ -193,6 +191,14 @@ const HelpYourChild = () => {
               <p>Avoid this. Teaching a different method than what's being used in class creates confusion. Your child's teacher is building a foundation using specific strategies. If you introduce a conflicting approach, it can undermine their understanding. Instead, try to understand the method being taught, even if it seems unfamiliar.</p>
             </div>
           </div>
+        </section>
+
+        <section className="help-section">
+          <hr />
+          <p>
+            Learn more about <a href="/">ParentMath</a>, explore <a href="/pricing">pricing</a>,
+            or read <a href="/how-it-works">how ParentMath works</a>.
+          </p>
         </section>
 
         <section className="help-section help-final-section">

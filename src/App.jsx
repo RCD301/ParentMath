@@ -3,6 +3,7 @@ import Landing from './components/Landing';
 import Results from './components/Results';
 import Pricing from './components/Pricing';
 import HelpYourChild from './components/HelpYourChild';
+import HowItWorks from './components/HowItWorks';
 import './App.css';
 
 /**
@@ -11,7 +12,7 @@ import './App.css';
  */
 function App() {
   // State management
-  const [currentView, setCurrentView] = useState('landing'); // landing, results, pricing, help
+  const [currentView, setCurrentView] = useState('landing'); // landing, results, pricing, help, how-it-works
   const [inputData, setInputData] = useState(null); // Data from Landing component (includes mode, type, data)
   const [preservedState, setPreservedState] = useState(null); // Preserve mode and method when resetting
 
@@ -23,8 +24,10 @@ function App() {
         setCurrentView('pricing');
       } else if (path === '/help-your-child-with-math-homework') {
         setCurrentView('help');
-      } else if (currentView === 'pricing' || currentView === 'help') {
-        // If we navigate away from pricing or help, go back to landing
+      } else if (path === '/how-it-works') {
+        setCurrentView('how-it-works');
+      } else if (currentView === 'pricing' || currentView === 'help' || currentView === 'how-it-works') {
+        // If we navigate away from pricing, help, or how-it-works, go back to landing
         setCurrentView('landing');
       }
     };
@@ -62,6 +65,9 @@ function App() {
 
       case 'pricing':
         return <Pricing />;
+
+      case 'how-it-works':
+        return <HowItWorks />;
 
       case 'landing':
         return <Landing onSubmit={handleInputSubmit} preservedState={preservedState} />;

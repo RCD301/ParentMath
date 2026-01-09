@@ -321,3 +321,31 @@
     font-size: 15px;
   }
 }
+
+/* Internal links section */
+.help-section hr {
+  border: none;
+  border-top: 1px solid rgba(45, 74, 157, 0.15);
+  margin: 0 0 20px 0;
+}
+
+.help-section p a:not(.help-cta-button) {
+  color: var(--confidence-blue);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.help-section p a:not(.help-cta-button):hover {
+  color: var(--learning-purple);
+  text-decoration: underline;
+}
+
+/* Ensure CTA buttons maintain their styles */
+.help-cta-button {
+  color: white !important;
+}
+
+.help-cta-button:hover {
+  color: white !important;
+  text-decoration: none !important;
+}
