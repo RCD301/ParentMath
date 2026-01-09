@@ -201,6 +201,10 @@ const HelpYourChild = () => {
           </p>
         </section>
 
+        <section className="help-section">
+          <p>If you want help explaining problems like this without guessing or stressing, <a href="/">ParentMath</a> was built specifically for parents.</p>
+        </section>
+
         <section className="help-section help-final-section">
           <h2>Homework Time Doesn't Have to Feel This Hard</h2>
 
