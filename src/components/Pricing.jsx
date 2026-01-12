@@ -1,11 +1,29 @@
 // src/components/Pricing.jsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { getApp } from 'firebase/app';
 import { LoginPanel } from './LoginPanel';
 import './Pricing.css';
 
 function Pricing() {
+  // Set canonical URL for SEO
+  useEffect(() => {
+    let link = document.querySelector('link[rel="canonical"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      document.head.appendChild(link);
+    }
+    link.setAttribute('href', 'https://www.parentmath.com/pricing');
+
+    return () => {
+      const existingLink = document.querySelector('link[rel="canonical"]');
+      if (existingLink) {
+        existingLink.remove();
+      }
+    };
+  }, []);
+
   const handleContinueToPayment = async () => {
     try {
       const functions = getFunctions(getApp());

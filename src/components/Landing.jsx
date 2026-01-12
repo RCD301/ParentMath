@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { BookOpenIcon, ChatBubbleLeftRightIcon, CameraIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import Cropper from 'react-easy-crop';
 import { extractTextFromImage } from '../utils/ocrService';
@@ -32,6 +32,24 @@ const Landing = ({ onSubmit, preservedState }) => {
 
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  // Set canonical URL for SEO
+  useEffect(() => {
+    let link = document.querySelector('link[rel="canonical"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      document.head.appendChild(link);
+    }
+    link.setAttribute('href', 'https://www.parentmath.com/');
+
+    return () => {
+      const existingLink = document.querySelector('link[rel="canonical"]');
+      if (existingLink) {
+        existingLink.remove();
+      }
+    };
   }, []);
 
   const handleModeSelect = (mode) => {

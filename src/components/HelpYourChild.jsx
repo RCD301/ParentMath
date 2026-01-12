@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { getApp } from 'firebase/app';
 import { LoginPanel } from './LoginPanel';
@@ -9,6 +9,24 @@ import './HelpYourChild.css';
  * Target keyword: "how to help your child with math homework"
  */
 const HelpYourChild = () => {
+  // Set canonical URL for SEO
+  useEffect(() => {
+    let link = document.querySelector('link[rel="canonical"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      document.head.appendChild(link);
+    }
+    link.setAttribute('href', 'https://www.parentmath.com/help-your-child-with-math-homework');
+
+    return () => {
+      const existingLink = document.querySelector('link[rel="canonical"]');
+      if (existingLink) {
+        existingLink.remove();
+      }
+    };
+  }, []);
+
   const handleGetStartedClick = async (e) => {
     e.preventDefault();
     try {
